@@ -1,4 +1,5 @@
 package com.weather.bigyellowfishtask.data.remote
+import org.json.JSONObject
 import retrofit2.Response
 
 abstract class BaseDataSource {
@@ -10,6 +11,11 @@ abstract class BaseDataSource {
                 val body = response.body()
                 if (body != null) return Resource.success(body)
             }
+            val jsonObj = JSONObject(response.errorBody()!!.charStream().readText())
+            if(jsonObj.has("message")) {
+                return error(jsonObj.getString("message"))
+            }
+
             return error("Something went wrong")
         } catch (e: Exception) {
             return error("")
