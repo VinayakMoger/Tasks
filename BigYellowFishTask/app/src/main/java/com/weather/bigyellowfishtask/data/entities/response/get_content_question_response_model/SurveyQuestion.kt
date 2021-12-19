@@ -5,5 +5,6 @@ data class SurveyQuestion(
     val description: String,
     val isMultiChoice: Boolean,
     val question_id: String,
-    val questions: String
+    val questions: String,
+    var score:Int = 0
 )

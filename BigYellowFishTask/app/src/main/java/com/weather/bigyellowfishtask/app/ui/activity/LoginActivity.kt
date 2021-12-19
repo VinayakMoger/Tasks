@@ -14,7 +14,6 @@ import com.weather.bigyellowfishtask.app.ui.components.CircularIndeterminateProg
 import com.weather.bigyellowfishtask.app.viewmodel.LoginViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
@@ -24,7 +23,6 @@ class LoginActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         lifecycleScope.launch(Dispatchers.Main) {
-
             setContent {
                 Scaffold {
                     BottomCard()

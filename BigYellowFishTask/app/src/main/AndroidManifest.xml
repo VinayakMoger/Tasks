@@ -14,12 +14,17 @@
         android:theme="@style/Theme.BigYellowFishTask"
         android:usesCleartextTraffic="true" >
         <activity
-            android:name=".app.ui.activity.GameActivity"
+            android:name=".app.ui.activity.LoginActivity"
             android:exported="true"
             android:label="@string/title_activity_game"
             android:theme="@style/Theme.BigYellowFishTask.NoActionBar" />
         <activity
-            android:name=".app.ui.activity.LoginActivity"
+            android:name=".app.ui.activity.GameActivity"
+            android:exported="true"
+            android:label="@string/title_activity_survey"
+            android:theme="@style/Theme.BigYellowFishTask.NoActionBar" />
+        <activity
+            android:name=".app.ui.activity.SurveyActivity"
             android:exported="true"
             android:label="@string/title_activity_login"
             android:theme="@style/Theme.BigYellowFishTask.NoActionBar" >

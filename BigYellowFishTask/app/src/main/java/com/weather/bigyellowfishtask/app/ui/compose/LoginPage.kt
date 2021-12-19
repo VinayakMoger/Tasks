@@ -48,8 +48,7 @@ fun LoginCard(viewModel: LoginViewModel) {
     ) {
         Column(
             modifier = Modifier
-                .padding(start = 30.dp, end = 30.dp)
-                .offset(y = (-50).dp),
+                .padding(start = 30.dp, end = 30.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center) {
             //Spacer(modifier = Modifier.size(50.dp))
