@@ -1,10 +1,7 @@
 package com.weather.bigyellowfishtask.app.ui.components
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -17,13 +14,10 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.weather.bigyellowfishtask.app.ui.theme.ButtonColor
 import com.weather.bigyellowfishtask.app.ui.theme.Transp
 import com.weather.bigyellowfishtask.app.viewmodel.GamePageViewModel
 import kotlinx.coroutines.delay
@@ -31,6 +25,9 @@ import java.lang.Math.PI
 import kotlin.math.cos
 import kotlin.math.sin
 
+/**
+ * Progress Indicator
+ */
 @Composable
 fun CircularIndeterminateProgressBar(isDisplayed: Boolean) {
     if (isDisplayed) {
@@ -64,8 +61,11 @@ fun GetTextFieldHintColor(label:String) {
     Text(label,color = Color.Gray)
 }
 
+/**
+ * Game Color Button
+ */
 @Composable
-fun CustomChip(
+fun CustomButton(
     color: Color,
     answerID:Int,
     modifier: Modifier,
@@ -79,6 +79,9 @@ fun CustomChip(
 }
 
 
+/**
+ * Timer Widget
+ */
 @Composable
 fun Timer(
 
@@ -104,10 +107,11 @@ fun Timer(
     var currentTime by remember {
         mutableStateOf(totalTime)
     }
-    // create variable for isTimerRunning
-    var isTimerRunning by remember {
-            viewModel.isTimerRunning
-    }
+    val isTimerRunning = viewModel.isTimerRunning.collectAsState().value
+    /*// create variable for isTimerRunning
+    var isTimerRunning2 by remember {
+            viewModel.isTimerRunning.collect
+    }*/
     if(currentTime<=0L) {
         viewModel.isTimerRunning.value = false
     }

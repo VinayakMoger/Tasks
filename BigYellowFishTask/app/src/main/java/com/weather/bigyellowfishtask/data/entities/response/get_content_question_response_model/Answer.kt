@@ -3,5 +3,6 @@ package com.weather.bigyellowfishtask.data.entities.response.get_content_questio
 data class Answer(
     val answerId: String,
     val mark: Int,
-    val optionText: String
+    val optionText: String,
+    var isSelected:Boolean = false,
 )

@@ -25,12 +25,9 @@ import com.weather.bigyellowfishtask.app.ui.theme.BgColor
 import com.weather.bigyellowfishtask.app.ui.theme.ButtonColor
 import com.weather.bigyellowfishtask.app.viewmodel.LoginViewModel
 
-
 /**
- * Created by Vinayak on 13-08-2021.
+ * Login Page Design
  */
-
-
 @Composable
 fun LoginCard(viewModel: LoginViewModel) {
 

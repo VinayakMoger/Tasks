@@ -1,28 +1,24 @@
 package com.weather.bigyellowfishtask.app.ui.compose
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.shape.ZeroCornerSize
-import androidx.compose.material.MaterialTheme.colors
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.weather.bigyellowfishtask.app.ui.components.CustomChip
+import com.weather.bigyellowfishtask.app.ui.components.CustomButton
 import com.weather.bigyellowfishtask.app.ui.components.Timer
 import com.weather.bigyellowfishtask.app.ui.theme.BgColor
 import com.weather.bigyellowfishtask.app.viewmodel.GamePageViewModel
-import com.weather.bigyellowfishtask.data.entities.response.get_game_response_model.GetGameResponseModel
 
+/**
+ * Game Screen Design
+ */
 @Composable
 fun GameCard(viewModel: GamePageViewModel) {
     if (viewModel.isSuccess.collectAsState().value) {
@@ -71,7 +67,7 @@ fun GameCard(viewModel: GamePageViewModel) {
                     Row() {
                         for (j in 0..2) {
                             if (index < data.play_area[0].answers.size) {
-                                CustomChip(
+                                CustomButton(
                                     color = Color(viewModel.parseColorFromString(data.play_area[0].answers[index].color)),
                                     answerID = data.play_area[0].answers[index].answerId,
                                     modifier = Modifier

@@ -10,6 +10,9 @@ abstract class BaseDataSource {
             if (response.isSuccessful) {
                 val body = response.body()
                 if (body != null) return Resource.success(body)
+                else {
+                    return Resource.success(null)
+                }
             }
             val jsonObj = JSONObject(response.errorBody()!!.charStream().readText())
             if(jsonObj.has("message")) {

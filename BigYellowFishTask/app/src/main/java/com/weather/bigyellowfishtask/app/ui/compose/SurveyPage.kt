@@ -1,13 +1,12 @@
 package com.weather.bigyellowfishtask.app.ui.compose
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.selection.selectable
-import androidx.compose.material.Checkbox
-import androidx.compose.material.RadioButton
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
@@ -19,13 +18,18 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberImagePainter
 import com.weather.bigyellowfishtask.app.ui.theme.BgColor
+import com.weather.bigyellowfishtask.app.ui.theme.ButtonColor
 import com.weather.bigyellowfishtask.app.viewmodel.SurveyViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
 
+/**
+ * Survey page design
+ */
 @Composable
 fun SurveyPage(viewModel: SurveyViewModel) {
     if (viewModel.isSuccess.collectAsState().value) {
         val contentQuestion = viewModel.contentQuestion.content
-        var questions = viewModel.contentQuestion.content[0].survey.surveyQuestions
+        val questions = viewModel.contentQuestion.content[0].survey.surveyQuestions
 
         if (contentQuestion.isNotEmpty() && questions.isNotEmpty()) {
             val page = contentQuestion[0].page
@@ -64,23 +68,35 @@ fun SurveyPage(viewModel: SurveyViewModel) {
                     }
 
                     if (questions.isNotEmpty()) {
+                        val isChecked = viewModel.isChecked
                         item {
                             Column() {
-
+                                var isCheckedIndex = 0
                                 for (question in questions) {
                                     Text(text = question.questions)
                                     Spacer(modifier = Modifier.height(10.dp))
                                     if (question.isMultiChoice) {
-                                        question.answers.forEach { answer ->
+                                        question.answers.forEachIndexed { answerIndex,answer ->
                                            Row(Modifier.fillMaxSize()) {
-                                               Checkbox(checked = false, onCheckedChange ={
-
+                                               Checkbox(checked = isChecked[answerIndex].collectAsState().value, onCheckedChange ={
+                                                   isChecked[answerIndex].value = it
+                                                   questions.forEachIndexed{ quesIndex,data->
+                                                       if(data==question) {
+                                                           val answersData = questions[quesIndex].answers
+                                                           answersData.forEachIndexed { ansIndex, answerVal->
+                                                               if(answerVal==answer) {
+                                                                   questions[quesIndex].answers[ansIndex].isSelected = it
+                                                               }
+                                                           }
+                                                       }
+                                                   }
                                                } )
                                                Text(
                                                    text = answer.optionText,
                                                    modifier = Modifier.padding(start = 16.dp)
                                                )
                                            }
+                                            isCheckedIndex +=1
                                         }
                                     } else {
                                         val (selectedOption, onOptionSelected) = remember {
@@ -93,7 +109,9 @@ fun SurveyPage(viewModel: SurveyViewModel) {
                                                 .fillMaxWidth()
                                                 .selectable(
                                                     selected = (answer.optionText == selectedOption),
-                                                    onClick = { onOptionSelected(answer.optionText) }
+                                                    onClick = {
+                                                        onOptionSelected(answer.optionText)
+                                                    }
                                                 )
                                                 .padding(horizontal = 16.dp)) {
 
@@ -103,6 +121,7 @@ fun SurveyPage(viewModel: SurveyViewModel) {
                                                     selected = (answer.optionText == selectedOption),
                                                     modifier = Modifier.padding(all = Dp(value = 8F)),
                                                     onClick = {
+                                                        question.isCorrectAnswer=answer.mark==1
                                                         onOptionSelected(answer.optionText)
 
                                                     }
@@ -116,10 +135,28 @@ fun SurveyPage(viewModel: SurveyViewModel) {
                                         }
                                     }
                                 }
+                                Spacer(modifier = Modifier.height(20.dp))
+
+                                Button(
+                                    onClick = {
+                                              viewModel.submitSurvey(questions)
+                                    },
+                                    colors = ButtonDefaults.buttonColors(backgroundColor = ButtonColor),
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(5.dp),
+                                    shape = RoundedCornerShape(12.dp),
+                                ) {
+                                    Text(text = "Submit Survey", fontSize = 22.sp, color= BgColor,modifier = Modifier
+                                        .padding(5.dp)
+                                        .background(Color.Transparent))
+                                }
                             }
 
                         }
                     }
+
+
 
 
                 }

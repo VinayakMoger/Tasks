@@ -13,7 +13,7 @@ fun <T> performGetOperation(networkCall: suspend () -> Resource<T>): Flow<Resour
         emit(Resource.loading())
         val responseStatus = networkCall.invoke()
         if (responseStatus.status == Status.SUCCESS) {
-            emit(Resource.success(data = responseStatus.data!!))
+            emit(Resource.success(data = responseStatus.data))
         } else if (responseStatus.status == Status.ERROR) {
             emit(Resource.error(message = responseStatus.message!!, data = null))
         }

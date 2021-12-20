@@ -2,11 +2,11 @@ package com.weather.bigyellowfishtask.app.viewmodel
 
 import android.graphics.Color
 import android.widget.Toast
-import androidx.compose.runtime.mutableStateOf
-
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.weather.bigyellowfishtask.app.BaseApplication
+import com.weather.bigyellowfishtask.app.ui.theme.APIToken
+import com.weather.bigyellowfishtask.app.ui.theme.Username
 import com.weather.bigyellowfishtask.data.entities.body.UpdateGameBodyModel
 import com.weather.bigyellowfishtask.data.entities.response.get_game_response_model.GetGameResponseModel
 import com.weather.bigyellowfishtask.data.remote.AppPreference
@@ -24,21 +24,28 @@ class GamePageViewModel @Inject constructor(private val baseApplication: BaseApp
     var isSuccess = MutableStateFlow(false)
     var gameFinished = MutableStateFlow(false)
     var isLoading = MutableStateFlow(false)
-    var isTimerRunning = mutableStateOf(false)
+    var isTimerRunning = MutableStateFlow(true)
     var score = MutableStateFlow(0)
     lateinit var gameResponseModel: GetGameResponseModel
 
+    /**
+     * Parse color String to Int
+     */
     fun parseColorFromString(color:String): Int {
         return Color.parseColor(color)
     }
 
+    /**
+     * Initialze API Call and Timer state flow
+     */
     init {
         getGame()
+        checkTimer()
     }
     private fun getGame() {
         viewModelScope.launch{
             isSuccess.value = false
-            repository.getGame().collect {
+            repository.getGame("Bearer ${preference.getSessionStringVal(APIToken)}").collect {
                 isLoading.value = it.status == Status.LOADING
                 if (it.status == Status.ERROR)  Toast.makeText(baseApplication,it.message!!, Toast.LENGTH_LONG).show()
                 else if (it.status == Status.SUCCESS) {
@@ -50,12 +57,41 @@ class GamePageViewModel @Inject constructor(private val baseApplication: BaseApp
             }
         }
     }
+
+    /**
+     * Check time is Completed
+     */
+    private fun checkTimer() {
+        viewModelScope.launch {
+            isTimerRunning.collect{
+                if(!it) {
+                    storeScore(score.value)
+                }
+            }
+        }
+
+    }
+
+    /**
+     * Store Scores
+     */
     private fun storeScore(score:Int) {
         viewModelScope.launch {
-            repository.updateGameModel(UpdateGameBodyModel(score,""))
+            val username = preference.getSessionStringVal(
+                Username)
+            repository.updateGameModel(UpdateGameBodyModel(username,score),"Bearer ${preference.getSessionStringVal(
+                APIToken
+            )}").collect {
+                isLoading.value = it.status == Status.LOADING
+                if (it.status == Status.ERROR)  Toast.makeText(baseApplication,it.message!!, Toast.LENGTH_LONG).show()
+                if(it.status == Status.SUCCESS) gameFinished.value=true
+            }
         }
     }
 
+    /**
+     * Update Scores
+     */
     fun updateScore(answerID:Int) {
         val answer = gameResponseModel.play_area[0].questions[index.value]
         if(answerID==answer.answerId) {
@@ -64,7 +100,7 @@ class GamePageViewModel @Inject constructor(private val baseApplication: BaseApp
         if(index.value!= gameResponseModel.play_area[0].questions.size-1){
             index.value+=1
         }  else {
-            gameFinished.value = true
+            storeScore(score.value)
         }
     }
 }
